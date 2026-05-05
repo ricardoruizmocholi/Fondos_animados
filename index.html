@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Animado</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <button id="theme-toggle" class="glass-panel" title="Alternar modo claro/oscuro">☀</button>
+
+  <aside id="effects-panel" class="glass-panel">
+    <div id="effect-buttons">
+      <button class="effect-btn active" data-effect="lights">✨ Luces</button>
+      <button class="effect-btn" data-effect="shadows">🌑 Sombras</button>
+      <button class="effect-btn" data-effect="dots">⬤ Puntos</button>
+      <button class="effect-btn" data-effect="lines">— Líneas</button>
+      <button class="effect-btn" data-effect="smoke">💨 Humo</button>
+      <button class="effect-btn" data-effect="water">🌊 Agua</button>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Color base</label>
+      <div id="color-controls">
+        <input type="color" id="color-picker" value="#00aaff">
+        <button class="swatch" data-color="#00aaff" style="background:#00aaff" title="Azul cian"></button>
+        <button class="swatch" data-color="#ff6600" style="background:#ff6600" title="Naranja fuego"></button>
+        <button class="swatch" data-color="#00ff88" style="background:#00ff88" title="Verde neón"></button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Intensidad <span id="intensity-val">70%</span></label>
+      <input type="range" id="intensity-slider" min="10" max="100" value="70" step="5">
+    </div>
+  </aside>
+
+  <button id="export-btn" class="glass-panel">⬇ Exportar JS</button>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
