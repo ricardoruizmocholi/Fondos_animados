@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Preview — animated-bg-lib</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000; overflow: hidden; width: 100vw; height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body.light { background: #f0f0f5; }
+    #bg { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
+
+    /* ── Floating panel ── */
+    #panel {
+      position: fixed; top: 14px; right: 14px; width: 210px;
+      background: rgba(8,8,12,0.68); backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 13px; z-index: 100;
+      transition: width .25s, opacity .25s;
+    }
+    #panel.collapsed { width: 42px; }
+    #ph {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 11px; cursor: pointer; user-select: none; gap: 8px;
+    }
+    #ptitle { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; flex: 1; }
+    #tcol { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 14px; flex-shrink: 0; padding: 2px; }
+    #pb { padding: 0 11px 13px; display: flex; flex-direction: column; gap: 11px; }
+    #panel.collapsed #pb,
+    #panel.collapsed #ptitle { display: none; }
+
+    .pl { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: rgba(255,255,255,0.38); margin-bottom: 4px; }
+    select {
+      width: 100%; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 7px; color: #fff; padding: 6px 8px; font-size: 12px; cursor: pointer; font-family: inherit;
+    }
+    select option { background: #1a1a2e; color: #fff; }
+    .crow { display: flex; gap: 7px; align-items: center; }
+    input[type=color] { width: 30px; height: 26px; border: 1px solid rgba(255,255,255,0.15); border-radius: 5px; cursor: pointer; background: none; padding: 2px; flex-shrink: 0; }
+    .sw { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); cursor: pointer; flex-shrink: 0; transition: transform .15s; }
+    .sw:hover { transform: scale(1.2); border-color: rgba(255,255,255,0.5); }
+    input[type=range] { width: 100%; accent-color: #4f9cf9; cursor: pointer; }
+    .pbtn {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 7px; color: #fff; padding: 7px 10px; cursor: pointer;
+      font-size: 11px; width: 100%; font-family: inherit; transition: background .15s;
+    }
+    .pbtn:hover { background: rgba(255,255,255,0.14); }
+
+    /* ── Back button ── */
+    #back {
+      position: fixed; top: 14px; left: 14px; z-index: 100;
+      background: rgba(8,8,12,0.68); backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 9px;
+      color: #fff; padding: 8px 14px; cursor: pointer; font-size: 12px; font-family: inherit;
+      transition: background .15s;
+    }
+    #back:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Effect label ── */
+    #elabel {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 100;
+      background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+      color: rgba(255,255,255,0.7); padding: 5px 16px; font-size: 13px;
+      letter-spacing: 0.05em; pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <button id="back">← Galería</button>
+  <div id="elabel"></div>
+
+  <div id="panel">
+    <div id="ph">
+      <span id="ptitle">Controls</span>
+      <button id="tcol" title="Colapsar">◂</button>
+    </div>
+    <div id="pb">
+
+      <div>
+        <div class="pl">Efecto</div>
+        <select id="esel"></select>
+      </div>
+
+      <div>
+        <div class="pl">Color</div>
+        <div class="crow">
+          <input type="color" id="cp" value="#4f9cf9">
+          <div class="sw" data-c="#4f9cf9" style="background:#4f9cf9"></div>
+          <div class="sw" data-c="#ff6b6b" style="background:#ff6b6b"></div>
+          <div class="sw" data-c="#00ff88" style="background:#00ff88"></div>
+          <div class="sw" data-c="#f9c74f" style="background:#f9c74f"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="pl">Intensidad <span id="iv">80%</span></div>
+        <input type="range" id="isl" min="10" max="100" value="80" step="5">
+      </div>
+
+      <button class="pbtn" id="thbtn">☀ Modo claro</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { AnimatedBG, EFFECTS } from './src/index.js';
+
+    // ── Params ──────────────────────────────────────────────────────────────
+    const p   = new URLSearchParams(location.search);
+    let effect    = p.get('effect')    || 'lights';
+    let color     = p.get('color')     || '#4f9cf9';
+    let intensity = parseFloat(p.get('intensity') || '0.8');
+    let darkMode  = p.get('dark') !== 'false';
+
+    if (!darkMode) document.body.classList.add('light');
+
+    // ── Canvas + AnimatedBG ─────────────────────────────────────────────────
+    const canvas = document.getElementById('bg');
+    canvas.width  = innerWidth;
+    canvas.height = innerHeight;
+    const bg = new AnimatedBG(canvas, { effect, color, intensity, darkMode }).start();
+    window.addEventListener('resize', () => { canvas.width = innerWidth; canvas.height = innerHeight; });
+
+    // ── Populate <select> ───────────────────────────────────────────────────
+    const sel = document.getElementById('esel');
+    const cats = {};
+    for (const [k, m] of Object.entries(EFFECTS)) (cats[m.category] ??= []).push([k, m]);
+    for (const [cat, items] of Object.entries(cats)) {
+      const og = document.createElement('optgroup');
+      og.label = cat;
+      for (const [k, m] of items) {
+        const opt = document.createElement('option');
+        opt.value = k; opt.textContent = m.label;
+        if (k === effect) opt.selected = true;
+        og.appendChild(opt);
+      }
+      sel.appendChild(og);
+    }
+
+    // ── Update label ────────────────────────────────────────────────────────
+    function updateLabel() {
+      const label = EFFECTS[effect]?.label || effect;
+      document.getElementById('elabel').textContent = label;
+      document.getElementById('ptitle').textContent  = label;
+    }
+    updateLabel();
+
+    // ── Effect switcher ─────────────────────────────────────────────────────
+    sel.addEventListener('change', () => { effect = sel.value; bg.setEffect(effect); updateLabel(); });
+
+    // ── Color ───────────────────────────────────────────────────────────────
+    document.getElementById('cp').value = color;
+    document.getElementById('cp').addEventListener('input', e => { color = e.target.value; bg.setColor(color); });
+    document.querySelectorAll('.sw').forEach(s => s.addEventListener('click', () => {
+      color = s.dataset.c; document.getElementById('cp').value = color; bg.setColor(color);
+    }));
+
+    // ── Intensity ───────────────────────────────────────────────────────────
+    document.getElementById('isl').value = Math.round(intensity * 100);
+    document.getElementById('isl').addEventListener('input', e => {
+      intensity = +e.target.value / 100;
+      document.getElementById('iv').textContent = e.target.value + '%';
+      bg.setIntensity(intensity);
+    });
+
+    // ── Theme ───────────────────────────────────────────────────────────────
+    const thbtn = document.getElementById('thbtn');
+    thbtn.addEventListener('click', () => {
+      darkMode = !darkMode;
+      document.body.classList.toggle('light', !darkMode);
+      thbtn.textContent = darkMode ? '☀ Modo claro' : '🌙 Modo oscuro';
+      bg.setDarkMode(darkMode);
+    });
+
+    // ── Collapse panel ──────────────────────────────────────────────────────
+    let collapsed = false;
+    document.getElementById('ph').addEventListener('click', () => {
+      collapsed = !collapsed;
+      document.getElementById('panel').classList.toggle('collapsed', collapsed);
+      document.getElementById('tcol').textContent = collapsed ? '▸' : '◂';
+    });
+
+    // ── Back ────────────────────────────────────────────────────────────────
+    document.getElementById('back').addEventListener('click', () => {
+      if (history.length > 1) history.back(); else location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
