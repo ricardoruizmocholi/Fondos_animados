@@ -35,6 +35,18 @@ export { LightningEffect }    from './effects/lightning.js';
 export { RippleEffect }       from './effects/ripple.js';
 export { NoiseFieldEffect }   from './effects/noise_field.js';
 
+// ── Two-color autonomous effects ──────────────────────────────────────────────
+export { GradientShiftEffect }    from './effects/gradient_shift.js';
+export { BreathingEffect }        from './effects/breathing.js';
+export { DiagonalWipeEffect }     from './effects/diagonal_wipe.js';
+export { BlobLavaEffect }         from './effects/blob_lava.js';
+export { MorphingGradientEffect } from './effects/morphing_gradient.js';
+export { ScanlinesEffect }        from './effects/scanlines.js';
+export { CausticsEffect }         from './effects/caustics.js';
+export { ValenciaCACEffect }      from './effects/valencia_cac.js';
+export { AuroraTwoEffect }        from './effects/aurora_two.js';
+export { TopographyFlowEffect }   from './effects/topography_flow.js';
+
 // ── Effect registry ───────────────────────────────────────────────────────────
 import { LightsEffect }       from './effects/lights.js';
 import { ShadowsEffect }      from './effects/shadows.js';
@@ -66,6 +78,16 @@ import { FireEffect }         from './effects/fire.js';
 import { LightningEffect }    from './effects/lightning.js';
 import { RippleEffect }       from './effects/ripple.js';
 import { NoiseFieldEffect }   from './effects/noise_field.js';
+import { GradientShiftEffect }    from './effects/gradient_shift.js';
+import { BreathingEffect }        from './effects/breathing.js';
+import { DiagonalWipeEffect }     from './effects/diagonal_wipe.js';
+import { BlobLavaEffect }         from './effects/blob_lava.js';
+import { MorphingGradientEffect } from './effects/morphing_gradient.js';
+import { ScanlinesEffect }        from './effects/scanlines.js';
+import { CausticsEffect }         from './effects/caustics.js';
+import { ValenciaCACEffect }      from './effects/valencia_cac.js';
+import { AuroraTwoEffect }        from './effects/aurora_two.js';
+import { TopographyFlowEffect }   from './effects/topography_flow.js';
 
 export const EFFECTS = {
   lights:        { Class: LightsEffect,       category: 'Original',   label: 'Luces',       tech: 'Canvas2D' },
@@ -98,6 +120,18 @@ export const EFFECTS = {
   lightning:     { Class: LightningEffect,    category: 'Física',     label: 'Lightning',   tech: 'Canvas2D' },
   ripple:        { Class: RippleEffect,       category: 'Física',     label: 'Ripple',      tech: 'Canvas2D' },
   noise_field:   { Class: NoiseFieldEffect,   category: 'Abstracto',  label: 'Noise Field', tech: 'Canvas2D' },
+
+  // ── Fondos Dinámicos 2-color ─────────────────────────────────────────────
+  gradient_shift:    { Class: GradientShiftEffect,    category: 'Fondos Dinámicos', label: 'Gradient Shift',    tech: 'Canvas2D', twoColor: true },
+  breathing:         { Class: BreathingEffect,        category: 'Fondos Dinámicos', label: 'Breathing',         tech: 'Canvas2D', twoColor: true },
+  diagonal_wipe:     { Class: DiagonalWipeEffect,     category: 'Fondos Dinámicos', label: 'Diagonal Wipe',     tech: 'Canvas2D', twoColor: true },
+  blob_lava:         { Class: BlobLavaEffect,         category: 'Fondos Dinámicos', label: 'Blob Lava',         tech: 'Canvas2D', twoColor: true },
+  morphing_gradient: { Class: MorphingGradientEffect, category: 'Fondos Dinámicos', label: 'Morphing Gradient', tech: 'Canvas2D', twoColor: true },
+  scanlines:         { Class: ScanlinesEffect,        category: 'Fondos Dinámicos', label: 'Scanlines',         tech: 'Canvas2D', twoColor: true },
+  caustics:          { Class: CausticsEffect,         category: 'Fondos Dinámicos', label: 'Caustics',          tech: 'Canvas2D', twoColor: true },
+  valencia_cac:      { Class: ValenciaCACEffect,      category: 'Fondos Dinámicos', label: 'Valencia CAC',      tech: 'Canvas2D', twoColor: true },
+  aurora_two:        { Class: AuroraTwoEffect,        category: 'Fondos Dinámicos', label: 'Aurora Two',        tech: 'Canvas2D', twoColor: true },
+  topography_flow:   { Class: TopographyFlowEffect,   category: 'Fondos Dinámicos', label: 'Topography Flow',   tech: 'Canvas2D', twoColor: true },
 };
 
 // ── AnimatedBG — public API ───────────────────────────────────────────────────
@@ -196,6 +230,24 @@ export class AnimatedBG {
     return this;
   }
 
+  setColor1(c) {
+    this.options.color1 = c;
+    this._effect?.setOptions?.({ color1: c });
+    return this;
+  }
+
+  setColor2(c) {
+    this.options.color2 = c;
+    this._effect?.setOptions?.({ color2: c });
+    return this;
+  }
+
+  setSpeed(s) {
+    this.options.speed = s;
+    this._effect?.setOptions?.({ speed: s });
+    return this;
+  }
+
   setIntensity(intensity) {
     this.options.intensity = intensity;
     this._effect?.setOptions?.({ intensity });
@@ -206,6 +258,14 @@ export class AnimatedBG {
     this.options.darkMode = dark;
     this._effect?.setOptions?.({ darkMode: dark });
     return this;
+  }
+
+  /** Returns standalone IIFE source for two-color effects, or null. */
+  getStandaloneCode() {
+    const c1  = this.options.color1 || '#0a0a0a';
+    const c2  = this.options.color2 || '#1a1a2e';
+    const spd = this.options.speed  ?? 0.5;
+    return this._effect?.getStandaloneCode?.(c1, c2, spd) ?? null;
   }
 
   destroy() {

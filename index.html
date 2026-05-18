@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>animated-bg-lib — 30 Canvas Effects</title>
+  <title>animated-bg-lib — 40 Canvas Effects</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -15,108 +15,68 @@
       --bg: #f0f0f5; --surface: rgba(0,0,0,0.04); --border: rgba(0,0,0,0.08);
       --text: #111; --muted: rgba(0,0,0,0.45);
     }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      min-height: 100vh; display: flex; flex-direction: column;
-    }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* ── Header ── */
-    header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 13px 22px; border-bottom: 1px solid var(--border);
-      background: rgba(0,0,0,0.35); backdrop-filter: blur(14px);
-      position: sticky; top: 0; z-index: 50;
-    }
-    .logo { font-size: 15px; font-weight: 700; letter-spacing: -0.02em; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 13px 22px; border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.35); backdrop-filter: blur(14px); position: sticky; top: 0; z-index: 50; }
+    .logo { font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
     .logo span { color: var(--accent); }
-    .badge {
-      font-size: 11px; color: var(--muted); background: var(--surface);
-      border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; margin-left: 8px;
-    }
-    .btn-icon {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; padding: 7px 12px; color: var(--text);
-      cursor: pointer; font-size: 12px; transition: background .15s; font-family: inherit;
-    }
+    .badge { font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; margin-left: 8px; }
+    .btn-icon { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; color: var(--text); cursor: pointer; font-size: 12px; transition: background .15s; font-family: inherit; }
     .btn-icon:hover { background: rgba(255,255,255,0.1); }
 
-    /* ── Layout ── */
     .layout { display: flex; flex: 1; }
 
-    /* ── Side Panel ── */
-    .side-panel {
-      width: var(--panel-w); flex-shrink: 0; padding: 16px;
-      border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px;
-      background: rgba(0,0,0,0.2); overflow-y: auto;
-      height: calc(100vh - 51px); position: sticky; top: 51px;
-    }
+    .side-panel { width: var(--panel-w); flex-shrink: 0; padding: 16px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 14px; background: rgba(0,0,0,0.2); overflow-y: auto; height: calc(100vh - 51px); position: sticky; top: 51px; }
     .p-label { font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 5px; }
-    input[type=search] {
-      width: 100%; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 8px; color: var(--text); padding: 7px 10px;
-      font-size: 13px; outline: none; font-family: inherit;
-    }
+    input[type=search] { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 7px 10px; font-size: 13px; outline: none; font-family: inherit; }
     input[type=search]:focus { border-color: var(--accent); }
+    #effect-sel { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 7px 8px; font-size: 13px; cursor: pointer; font-family: inherit; outline: none; }
+    #effect-sel option, #effect-sel optgroup { background: #1a1a2e; color: #eee; }
+    body.light #effect-sel option, body.light #effect-sel optgroup { background: #fff; color: #111; }
     .color-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-    input[type=color] {
-      width: 32px; height: 28px; border: 1px solid var(--border);
-      border-radius: 6px; cursor: pointer; background: none; padding: 2px; flex-shrink: 0;
-    }
+    input[type=color] { width: 32px; height: 28px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: none; padding: 2px; flex-shrink: 0; }
     .sw { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); cursor: pointer; flex-shrink: 0; transition: transform .15s; }
     .sw:hover { transform: scale(1.2); }
     input[type=range] { width: 100%; accent-color: var(--accent); cursor: pointer; }
     .cat-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
     .p-section { display: flex; flex-direction: column; }
     .export-col { display: flex; flex-direction: column; gap: 6px; }
-    .exp-btn {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-      color: var(--text); padding: 7px 10px; cursor: pointer; font-size: 12px;
-      text-align: left; transition: background .15s; font-family: inherit; width: 100%;
-    }
+    .exp-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); padding: 7px 10px; cursor: pointer; font-size: 12px; text-align: left; transition: background .15s; font-family: inherit; width: 100%; }
     .exp-btn:hover { background: rgba(79,156,249,0.12); border-color: rgba(79,156,249,0.4); }
     .hint { font-size: 11px; color: var(--muted); line-height: 1.6; }
-    #effect-sel option, #effect-sel optgroup { background: #1a1a2e; color: #eee; }
-    body.light #effect-sel option, body.light #effect-sel optgroup { background: #fff; color: #111; }
 
-    /* ── Grid ── */
     .grid-area { flex: 1; padding: 18px 20px; overflow-y: auto; }
-    .cat-header {
-      font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted);
-      margin: 18px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px;
-    }
+    .cat-header { font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 18px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
     .cat-header:first-child { margin-top: 0; }
+    .cat-header.two-color-hdr { color: var(--accent); border-color: rgba(79,156,249,0.3); }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 12px; }
 
     /* ── Cards ── */
-    .card {
-      border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);
-      background: var(--surface); cursor: pointer; position: relative;
-      transition: transform .2s, box-shadow .2s, border-color .2s;
-    }
+    .card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); background: var(--surface); cursor: pointer; position: relative; transition: transform .2s, box-shadow .2s, border-color .2s; }
     .card:hover { transform: translateY(-3px); box-shadow: 0 14px 44px rgba(0,0,0,0.55); border-color: rgba(79,156,249,0.35); }
     .card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(79,156,249,0.25); }
-    canvas.prev { display: block; width: 100%; height: 150px; }
-    .card-info { padding: 9px 11px 11px; }
-    .card-title { font-size: 13px; font-weight: 600; }
-    .card-meta { display: flex; gap: 6px; margin-top: 4px; align-items: center; }
+    .card.two-color { border-color: rgba(79,156,249,0.2); }
+    canvas.prev { display: block; width: 100%; height: 140px; }
+    .card-info { padding: 9px 10px 10px; }
+    .card-title { font-size: 12px; font-weight: 600; }
+    .card-meta { display: flex; gap: 5px; margin-top: 4px; align-items: center; flex-wrap: wrap; }
     .tech-badge { font-size: 10px; padding: 1px 7px; border-radius: 10px; background: rgba(79,156,249,0.1); border: 1px solid rgba(79,156,249,0.2); color: var(--accent); }
-    .fs-btn {
-      position: absolute; top: 7px; right: 7px; opacity: 0;
-      background: rgba(0,0,0,0.65); border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 6px; color: #fff; padding: 3px 8px; font-size: 11px;
-      cursor: pointer; transition: opacity .15s; backdrop-filter: blur(6px); font-family: inherit;
-    }
-    .card:hover .fs-btn { opacity: 1; }
+    .nc-badge { font-size: 10px; padding: 1px 7px; border-radius: 10px; background: rgba(255,170,0,0.1); border: 1px solid rgba(255,170,0,0.25); color: #ffaa00; }
+
+    /* Two-color controls inside card */
+    .tc-controls { display: flex; align-items: center; gap: 6px; margin-top: 7px; padding-top: 7px; border-top: 1px solid var(--border); }
+    .tc-label { font-size: 10px; color: var(--muted); flex-shrink: 0; }
+    .tc-controls input[type=color] { width: 28px; height: 24px; padding: 1px; }
+
+    /* Card action buttons */
+    .card-actions { display: flex; gap: 5px; margin-top: 7px; }
+    .ca-btn { flex: 1; font-size: 10px; padding: 4px 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; text-align: center; transition: background .15s; font-family: inherit; }
+    .ca-btn:hover { background: rgba(79,156,249,0.12); border-color: var(--accent); color: var(--accent); }
+    .fs-card-btn { font-size: 12px; }
+
     .hidden { display: none !important; }
 
-    /* ── Toast ── */
-    #toast {
-      position: fixed; bottom: 22px; right: 22px; background: #1a1a2e;
-      border: 1px solid rgba(79,156,249,0.3); color: #fff;
-      padding: 10px 16px; border-radius: 9px; font-size: 13px; z-index: 200;
-      transform: translateY(50px); opacity: 0; transition: all .28s; pointer-events: none;
-    }
+    #toast { position: fixed; bottom: 22px; right: 22px; background: #1a1a2e; border: 1px solid rgba(79,156,249,0.3); color: #fff; padding: 10px 16px; border-radius: 9px; font-size: 13px; z-index: 200; transform: translateY(50px); opacity: 0; transition: all .28s; pointer-events: none; }
     #toast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
@@ -124,7 +84,7 @@
   <header>
     <div style="display:flex;align-items:center;gap:8px">
       <div class="logo">animated-bg<span>-lib</span></div>
-      <span class="badge">v1.0 · 30 efectos</span>
+      <span class="badge">v1.0 · 40 efectos</span>
     </div>
     <div style="display:flex;gap:8px">
       <button class="btn-icon" id="theme-btn">☀ Modo claro</button>
@@ -132,58 +92,50 @@
   </header>
 
   <div class="layout">
-    <!-- ── Side Panel ── -->
     <aside class="side-panel">
-
       <div class="p-section">
         <div class="p-label">Efecto activo</div>
-        <select id="effect-sel" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 8px;font-size:13px;cursor:pointer;font-family:inherit;outline:none"></select>
+        <select id="effect-sel"></select>
       </div>
-
       <div class="p-section" id="active-section" style="display:none">
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px">
           <span id="active-cat" class="cat-badge"></span>
           <span id="active-tech" class="tech-badge"></span>
         </div>
       </div>
-
       <div class="p-section">
+        <div class="p-label">Buscar</div>
+        <input type="search" id="search" placeholder="Nombre o categoría…">
+      </div>
+      <div class="p-section" id="single-color-panel">
         <div class="p-label">Color base</div>
         <div class="color-row">
           <input type="color" id="color-pick" value="#4f9cf9">
-          <div class="sw" data-c="#4f9cf9" style="background:#4f9cf9" title="Azul"></div>
-          <div class="sw" data-c="#ff6b6b" style="background:#ff6b6b" title="Rojo"></div>
-          <div class="sw" data-c="#00ff88" style="background:#00ff88" title="Verde"></div>
-          <div class="sw" data-c="#f9c74f" style="background:#f9c74f" title="Amarillo"></div>
-          <div class="sw" data-c="#a855f7" style="background:#a855f7" title="Violeta"></div>
+          <div class="sw" data-c="#4f9cf9" style="background:#4f9cf9"></div>
+          <div class="sw" data-c="#ff6b6b" style="background:#ff6b6b"></div>
+          <div class="sw" data-c="#00ff88" style="background:#00ff88"></div>
+          <div class="sw" data-c="#f9c74f" style="background:#f9c74f"></div>
+          <div class="sw" data-c="#a855f7" style="background:#a855f7"></div>
         </div>
       </div>
-
       <div class="p-section">
         <div class="p-label">Intensidad <span id="int-val">80%</span></div>
         <input type="range" id="intensity" min="10" max="100" value="80" step="5">
       </div>
-
       <div class="p-section">
         <div class="p-label">Exportar</div>
         <div class="export-col">
           <button class="exp-btn" id="btn-cdn">⎘ Copiar snippet CDN</button>
+          <button class="exp-btn" id="btn-js">⬇ Descargar .js standalone</button>
           <button class="exp-btn" id="btn-fs">⤢ Abrir pantalla completa</button>
         </div>
       </div>
-
       <div class="p-section" style="margin-top:auto">
         <div class="p-label">Controles</div>
-        <div class="hint">
-          Click izquierdo → explosión<br>
-          Click derecho → implosión<br>
-          Ratón quieto 2s → autónomo
-        </div>
+        <div class="hint">Click izq → explosión<br>Click der → implosión<br>Ratón quieto 2s → autónomo<br><br>Efectos 2-color: sin interacción de ratón</div>
       </div>
-
     </aside>
 
-    <!-- ── Gallery Grid ── -->
     <main class="grid-area" id="grid-area"></main>
   </div>
 
@@ -194,14 +146,17 @@
 
     // ── State ──────────────────────────────────────────────────────────────
     let color = '#4f9cf9', intensity = 0.8, darkMode = true, activeKey = null;
-    const instances = new Map();
+    const instances = new Map();  // key → { bg, color1, color2, speed }
 
-    // ── Populate <select> (grouped by category) ────────────────────────────
+    // Default two-color palette by mode
+    const tc1dark = '#0a0a0a', tc2dark = '#1a1a2e';
+    const tc1light = '#ffffff', tc2light = '#f0f4ff';
+
+    // ── Populate effect <select> ────────────────────────────────────────────
     const effSel = document.getElementById('effect-sel');
     const catGroups = {};
     for (const [k, m] of Object.entries(EFFECTS)) (catGroups[m.category] ??= []).push([k, m]);
-    const emptyOpt = document.createElement('option');
-    emptyOpt.value = ''; emptyOpt.textContent = '— Selecciona un efecto —'; emptyOpt.disabled = true; emptyOpt.selected = true;
+    const emptyOpt = Object.assign(document.createElement('option'), { value: '', textContent: '— Selecciona un efecto —', disabled: true, selected: true });
     effSel.appendChild(emptyOpt);
     for (const [cat, items] of Object.entries(catGroups)) {
       const og = document.createElement('optgroup'); og.label = cat;
@@ -211,39 +166,57 @@
       effSel.appendChild(og);
     }
 
-    // ── Build gallery grid ─────────────────────────────────────────────────
+    // ── Build gallery grid ──────────────────────────────────────────────────
     const gridArea = document.getElementById('grid-area');
-    const categories = {};
-    for (const [key, meta] of Object.entries(EFFECTS)) {
-      (categories[meta.category] ??= []).push({ key, ...meta });
-    }
 
-    for (const [cat, items] of Object.entries(categories)) {
-      const hdr = Object.assign(document.createElement('div'), { className: 'cat-header', textContent: cat });
+    for (const [cat, items] of Object.entries(catGroups)) {
+      const hdr = Object.assign(document.createElement('div'), {
+        className: 'cat-header' + (cat === 'Fondos Dinámicos' ? ' two-color-hdr' : ''),
+        textContent: cat === 'Fondos Dinámicos' ? '🎨 ' + cat + ' — 2 colores · Sin ratón' : cat,
+      });
       gridArea.appendChild(hdr);
       const grid = Object.assign(document.createElement('div'), { className: 'grid' });
       gridArea.appendChild(grid);
 
-      for (const item of items) {
+      for (const [key, meta] of items) {
+        const isTwoColor = meta.twoColor === true;
         const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.key = item.key;
-        card.dataset.cat = item.category;
-        card.dataset.label = item.label.toLowerCase();
+        card.className = 'card' + (isTwoColor ? ' two-color' : '');
+        card.dataset.key = key;
+        card.dataset.cat = meta.category;
+        card.dataset.label = meta.label.toLowerCase();
+        card.dataset.twoColor = isTwoColor ? '1' : '';
 
         const cv = document.createElement('canvas');
-        cv.className = 'prev'; cv.width = 260; cv.height = 150;
-
+        cv.className = 'prev'; cv.width = 260; cv.height = 140;
         card.appendChild(cv);
-        card.insertAdjacentHTML('beforeend', `
-          <div class="card-info">
-            <div class="card-title">${item.label}</div>
-            <div class="card-meta">
-              <span class="cat-badge">${item.category}</span>
-              <span class="tech-badge">${item.tech}</span>
-            </div>
-          </div>
-          <button class="fs-btn" title="Pantalla completa">⤢</button>`);
+
+        const info = document.createElement('div');
+        info.className = 'card-info';
+        info.innerHTML = `<div class="card-title">${meta.label}</div>
+          <div class="card-meta">
+            <span class="cat-badge">${meta.category}</span>
+            <span class="tech-badge">${meta.tech}</span>
+            ${isTwoColor ? '<span class="nc-badge">2-color · No mouse</span>' : ''}
+          </div>`;
+
+        if (isTwoColor) {
+          const tcRow = document.createElement('div');
+          tcRow.className = 'tc-controls';
+          tcRow.innerHTML = `<span class="tc-label">Color:</span>
+            <input type="color" class="c1-inp" value="${darkMode ? tc1dark : tc1light}" title="Color 1">
+            <input type="color" class="c2-inp" value="${darkMode ? tc2dark : tc2light}" title="Color 2">`;
+          info.appendChild(tcRow);
+        }
+
+        const actions = document.createElement('div');
+        actions.className = 'card-actions';
+        actions.innerHTML = `
+          <button class="ca-btn dl-btn" title="Descargar standalone JS">⬇ JS</button>
+          <button class="ca-btn snip-btn" title="Copiar snippet">{ } Snippet</button>
+          <button class="ca-btn fs-card-btn" title="Pantalla completa">⤢</button>`;
+        info.appendChild(actions);
+        card.appendChild(info);
         grid.appendChild(card);
       }
     }
@@ -252,105 +225,199 @@
     const io = new IntersectionObserver(entries => {
       for (const { target, isIntersecting } of entries) {
         const key = target.dataset.key;
-        const cv  = target.querySelector('canvas');
+        const cv  = target.querySelector('canvas.prev');
+        const isTwoColor = target.dataset.twoColor === '1';
         if (isIntersecting) {
           if (!instances.has(key)) {
+            const opts = isTwoColor
+              ? { effect: key, color1: darkMode ? tc1dark : tc1light, color2: darkMode ? tc2dark : tc2light, speed: 0.5, darkMode }
+              : { effect: key, color, intensity, darkMode };
             try {
-              instances.set(key, new AnimatedBG(cv, { effect: key, color, intensity, darkMode }).start());
-            } catch(e) { console.warn(`Effect "${key}" error:`, e); }
+              const bg = new AnimatedBG(cv, opts).start();
+              instances.set(key, { bg, isTwoColor });
+            } catch(e) { console.warn(`Effect "${key}":`, e.message); }
           } else {
-            instances.get(key).start();
+            instances.get(key).bg.start();
           }
         } else {
-          instances.get(key)?.stop();
+          instances.get(key)?.bg.stop();
         }
       }
-    }, { threshold: 0.05, rootMargin: '100px' });
+    }, { threshold: 0.05, rootMargin: '120px' });
 
     document.querySelectorAll('.card').forEach(c => io.observe(c));
 
-    // ── Card interaction ───────────────────────────────────────────────────
+    // ── Card click → set active ─────────────────────────────────────────────
     gridArea.addEventListener('click', e => {
       const card = e.target.closest('.card'); if (!card) return;
-      const key  = card.dataset.key;
-      if (e.target.closest('.fs-btn')) {
-        openPreview(key); return;
-      }
+      const key = card.dataset.key;
+
+      // Fullscreen button
+      if (e.target.closest('.fs-card-btn')) { openPreview(key); return; }
+
+      // Download standalone JS
+      if (e.target.closest('.dl-btn')) { downloadStandalone(key, card); return; }
+
+      // Snippet button
+      if (e.target.closest('.snip-btn')) { copySnippet(key, card); return; }
+
+      // Two-color inputs — let browser handle natively
+      if (e.target.matches('.c1-inp') || e.target.matches('.c2-inp')) return;
+
       setActive(key, card);
+    });
+
+    // Two-color inputs: update live
+    gridArea.addEventListener('input', e => {
+      const card = e.target.closest('.card'); if (!card) return;
+      const key = card.dataset.key;
+      const inst = instances.get(key);
+      if (!inst?.isTwoColor) return;
+      if (e.target.classList.contains('c1-inp')) inst.bg.setColor1(e.target.value);
+      if (e.target.classList.contains('c2-inp')) inst.bg.setColor2(e.target.value);
     });
 
     function setActive(key, card) {
       activeKey = key;
-      // Sync select
       effSel.value = key;
-      // Highlight card
-      document.querySelectorAll('.card').forEach(c => c.classList.toggle('selected', c.dataset.key === key));
+      document.querySelectorAll('.card').forEach(c => c.classList.toggle('selected', c === card));
       const meta = EFFECTS[key];
       document.getElementById('active-section').style.display = '';
       document.getElementById('active-cat').textContent  = meta.category;
       document.getElementById('active-tech').textContent = meta.tech;
-      // Scroll card into view if needed
-      const target = card || document.querySelector(`.card[data-key="${key}"]`);
-      target?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Show/hide single-color panel
+      document.getElementById('single-color-panel').style.display = meta.twoColor ? 'none' : '';
+      card?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // Select drives the gallery
     effSel.addEventListener('change', () => {
       const key = effSel.value; if (!key) return;
-      setActive(key, null);
+      const card = document.querySelector(`.card[data-key="${key}"]`);
+      setActive(key, card);
     });
 
     function openPreview(key) {
       const eff = key || activeKey || 'lights';
-      const url = `preview.html?effect=${eff}&color=${encodeURIComponent(color)}&intensity=${intensity}&dark=${darkMode}`;
+      const inst = instances.get(eff);
+      const isTwoColor = inst?.isTwoColor || EFFECTS[eff]?.twoColor;
+      let url = `preview.html?effect=${eff}&dark=${darkMode}`;
+      if (isTwoColor) {
+        const card = document.querySelector(`.card[data-key="${eff}"]`);
+        const c1 = card?.querySelector('.c1-inp')?.value || (darkMode ? tc1dark : tc1light);
+        const c2 = card?.querySelector('.c2-inp')?.value || (darkMode ? tc2dark : tc2light);
+        url += `&c1=${encodeURIComponent(c1)}&c2=${encodeURIComponent(c2)}&speed=0.5`;
+      } else {
+        url += `&color=${encodeURIComponent(color)}&intensity=${intensity}`;
+      }
       window.open(url, '_blank');
     }
 
-    // ── Control helpers ────────────────────────────────────────────────────
-    function applyAll() {
-      instances.forEach(bg => bg.setColor(color).setIntensity(intensity).setDarkMode(darkMode));
+    // ── Standalone JS export ────────────────────────────────────────────────
+    function downloadStandalone(key, card) {
+      const inst = instances.get(key);
+      let code = null;
+      if (inst?.isTwoColor || EFFECTS[key]?.twoColor) {
+        const c1 = card?.querySelector('.c1-inp')?.value || tc1dark;
+        const c2 = card?.querySelector('.c2-inp')?.value || tc2dark;
+        code = inst?.bg?.getStandaloneCode?.() || null;
+        // Re-generate with current colors if possible
+        if (!code) {
+          const tempBg = new AnimatedBG(document.createElement('canvas'),
+            { effect: key, color1: c1, color2: c2, speed: 0.5, darkMode });
+          code = tempBg.getStandaloneCode();
+          tempBg.destroy();
+        }
+      }
+      if (!code) {
+        // For regular effects: generate a module snippet
+        code = generateModuleSnippet(key);
+      }
+      const blob = new Blob([code], { type: 'text/javascript' });
+      const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(blob),
+        download: key + '.standalone.js',
+      });
+      a.click(); URL.revokeObjectURL(a.href);
+      toast('⬇ Descargando ' + key + '.standalone.js');
     }
 
-    // Color
-    document.getElementById('color-pick').addEventListener('input', e => { color = e.target.value; applyAll(); });
-    document.querySelectorAll('.sw').forEach(s => s.addEventListener('click', () => {
-      color = s.dataset.c;
-      document.getElementById('color-pick').value = color;
-      applyAll();
-    }));
+    function generateModuleSnippet(key) {
+      const meta = EFFECTS[key];
+      return `/**
+ * ${meta?.label || key} — animated-bg-lib
+ * Este efecto usa ES Modules. Consulta: https://github.com/tu/animated-bg-lib
+ *
+ * Uso rápido (requiere servidor HTTP, no file://):
+ *   import { AnimatedBG } from './src/index.js';
+ *   new AnimatedBG('#canvas', { effect: '${key}', color: '${color}', intensity: ${intensity} }).start();
+ */
+// Para un bundle autocontenido, ejecuta: npm run build
+// y usa dist/animated-bg.min.js con window.AnimatedBGLib.AnimatedBG
+`;
+    }
 
-    // Intensity
+    function copySnippet(key, card) {
+      const meta = EFFECTS[key];
+      let snippet;
+      if (meta?.twoColor) {
+        const c1 = card?.querySelector('.c1-inp')?.value || tc1dark;
+        const c2 = card?.querySelector('.c2-inp')?.value || tc2dark;
+        snippet = `<canvas id="bg" style="position:fixed;inset:0;width:100%;height:100%"></canvas>\n<script src="${key}.standalone.js"><\/script>\n<script>AnimatedBGEffect.initBackground(document.getElementById('bg'), {color1:'${c1}',color2:'${c2}',speed:0.5})<\/script>`;
+      } else {
+        snippet = `<canvas id="bg" style="position:fixed;inset:0;width:100%;height:100%"></canvas>\n<script type="module">\n  import { AnimatedBG } from './src/index.js';\n  new AnimatedBG('#bg', { effect: '${key}', color: '${color}', intensity: ${intensity} }).start();\n<\/script>`;
+      }
+      navigator.clipboard.writeText(snippet)
+        .then(() => toast('✓ Snippet copiado'))
+        .catch(() => toast('⚠ No se pudo copiar'));
+    }
+
+    // ── Single-color controls ───────────────────────────────────────────────
+    function applyToSingle() {
+      instances.forEach(({ bg, isTwoColor }) => {
+        if (!isTwoColor) bg.setColor(color).setIntensity(intensity).setDarkMode(darkMode);
+      });
+    }
+
+    document.getElementById('color-pick').addEventListener('input', e => { color = e.target.value; applyToSingle(); });
+    document.querySelectorAll('.sw').forEach(s => s.addEventListener('click', () => {
+      color = s.dataset.c; document.getElementById('color-pick').value = color; applyToSingle();
+    }));
     document.getElementById('intensity').addEventListener('input', e => {
       intensity = +e.target.value / 100;
       document.getElementById('int-val').textContent = e.target.value + '%';
-      applyAll();
+      applyToSingle();
     });
 
-    // Theme
+    // ── Theme toggle ────────────────────────────────────────────────────────
     const themeBtn = document.getElementById('theme-btn');
     themeBtn.addEventListener('click', () => {
       darkMode = !darkMode;
       document.body.classList.toggle('light', !darkMode);
       themeBtn.textContent = darkMode ? '☀ Modo claro' : '🌙 Modo oscuro';
-      applyAll();
+      instances.forEach(({ bg, isTwoColor }) => {
+        bg.setDarkMode(darkMode);
+        if (!isTwoColor) bg.setColor(color);
+      });
+      // Update two-color default inputs
+      document.querySelectorAll('.c1-inp').forEach(el => { if (el.value === tc1dark || el.value === tc1light) el.value = darkMode ? tc1dark : tc1light; });
+      document.querySelectorAll('.c2-inp').forEach(el => { if (el.value === tc2dark || el.value === tc2light) el.value = darkMode ? tc2dark : tc2light; });
     });
 
-    // Search
+    // ── Search ──────────────────────────────────────────────────────────────
     document.getElementById('search').addEventListener('input', e => {
       const q = e.target.value.toLowerCase().trim();
       document.querySelectorAll('.card').forEach(c => {
         c.classList.toggle('hidden', q && !c.dataset.label.includes(q) && !c.dataset.cat.toLowerCase().includes(q));
       });
-      document.querySelectorAll('.cat-header, .cat-header + .grid').forEach(el => {
-        const grid = el.classList.contains('grid') ? el : el.nextElementSibling;
-        if (!grid) return;
-        const anyVisible = [...grid.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
-        el.classList.toggle('hidden', !anyVisible);
-        if (el.classList.contains('cat-header')) grid?.classList.toggle('hidden', !anyVisible);
+      document.querySelectorAll('.cat-header').forEach(h => {
+        const g = h.nextElementSibling;
+        const vis = !g || [...g.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+        h.classList.toggle('hidden', !vis);
+        g?.classList.toggle('hidden', !vis);
       });
     });
 
-    // Export
+    // ── Global export buttons ───────────────────────────────────────────────
     function toast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg; t.classList.add('show');
@@ -359,16 +426,14 @@
 
     document.getElementById('btn-cdn').addEventListener('click', () => {
       const eff = activeKey || 'lights';
-      const snippet = [
-        `<canvas id="bg" style="position:fixed;inset:0;width:100%;height:100%"></canvas>`,
-        `<script type="module">`,
-        `  import { AnimatedBG } from './src/index.js';`,
-        `  new AnimatedBG('#bg', { effect: '${eff}', color: '${color}', intensity: ${intensity} }).start();`,
-        `<\/script>`,
-      ].join('\n');
-      navigator.clipboard.writeText(snippet)
-        .then(() => toast('✓ Snippet copiado al portapapeles'))
-        .catch(() => toast('⚠ Copia manual: ' + snippet.slice(0, 60) + '…'));
+      const card = document.querySelector(`.card[data-key="${eff}"]`);
+      copySnippet(eff, card);
+    });
+
+    document.getElementById('btn-js').addEventListener('click', () => {
+      const eff = activeKey || 'lights';
+      const card = document.querySelector(`.card[data-key="${eff}"]`);
+      downloadStandalone(eff, card);
     });
 
     document.getElementById('btn-fs').addEventListener('click', () => openPreview(activeKey || 'lights'));
